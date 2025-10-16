@@ -66,10 +66,10 @@ namespace
 
 void GBufferRT::registerBindings(pybind11::module& m)
 {
-    pybind11::enum_<GBufferRT::LODMode> lodMode(m, "LODMode");
+    /*pybind11::enum_<GBufferRT::LODMode> lodMode(m, "LODMode");
     lodMode.value("UseMip0", GBufferRT::LODMode::UseMip0);
     lodMode.value("RayDifferentials", GBufferRT::LODMode::RayDifferentials);
-    lodMode.value("RayCones", GBufferRT::LODMode::RayCones);
+    lodMode.value("RayCones", GBufferRT::LODMode::RayCones);*/
 }
 
 RenderPassReflection GBufferRT::reflect(const CompileData& compileData)

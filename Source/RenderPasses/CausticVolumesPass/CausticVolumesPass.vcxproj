@@ -11,11 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{873F13CA-A9C7-47BA-857D-8848C5E7F07E}</ProjectGuid>
+    <ProjectGuid>{3B199DCF-BC8D-4B3D-8B01-6C1E8D1F36E3}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>MegakernelPathTracer</RootNamespace>
+    <RootNamespace>CausticVolumesPass</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>MegakernelPathTracer</ProjectName>
+    <ProjectName>CausticVolumesPass</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -25,19 +25,15 @@
     <Import Project="..\..\Falcor\Falcor.props" />
   </ImportGroup>
   <ItemGroup>
-    <ClCompile Include="MegakernelPathTracer.cpp" />
+    <ClCompile Include="CausticVolumesPass.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MegakernelPathTracer.h" />
+    <ClInclude Include="CausticVolumesPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Falcor\Falcor.vcxproj">
       <Project>{2c535635-e4c5-4098-a928-574f0e7cd5f9}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ShaderSource Include="PathTracer.rt.slang" />
-    <ShaderSource Include="PathTracer.slang" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>

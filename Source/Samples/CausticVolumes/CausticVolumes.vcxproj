@@ -10,12 +10,22 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CausticVolumes.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CausticVolumes.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Falcor\Falcor.vcxproj">
+      <Project>{2c535635-e4c5-4098-a928-574f0e7cd5f9}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{873F13CA-A9C7-47BA-857D-8848C5E7F07E}</ProjectGuid>
+    <ProjectGuid>{3C7551D5-1D50-4C86-9F93-A4498128930F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>MegakernelPathTracer</RootNamespace>
+    <RootNamespace>CausticVolumes</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>MegakernelPathTracer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -24,35 +34,20 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="..\..\Falcor\Falcor.props" />
   </ImportGroup>
-  <ItemGroup>
-    <ClCompile Include="MegakernelPathTracer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="MegakernelPathTracer.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Falcor\Falcor.vcxproj">
-      <Project>{2c535635-e4c5-4098-a928-574f0e7cd5f9}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ShaderSource Include="PathTracer.rt.slang" />
-    <ShaderSource Include="PathTracer.slang" />
-  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <ShaderSourceSubDir>Shaders\RenderPasses\$(ProjectName)</ShaderSourceSubDir>
+    <ShaderSourceSubDir>Shaders\Samples\$(ProjectName)</ShaderSourceSubDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <ShaderSourceSubDir>Shaders\RenderPasses\$(ProjectName)</ShaderSourceSubDir>
+    <ShaderSourceSubDir>Shaders\Samples\$(ProjectName)</ShaderSourceSubDir>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -70,14 +65,14 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>PROJECT_DIR=R"($(ProjectDir))";_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>python36.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -88,10 +83,9 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>PROJECT_DIR=R"($(ProjectDir))";NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

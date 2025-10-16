@@ -52,11 +52,11 @@ extern "C" __declspec(dllexport) void getPasses(Falcor::RenderPassLibrary& lib)
 
 void GBufferBase::registerBindings(pybind11::module& m)
 {
-    pybind11::enum_<GBufferBase::SamplePattern> samplePattern(m, "SamplePattern");
+    /*pybind11::enum_<GBufferBase::SamplePattern> samplePattern(m, "SamplePattern");
     samplePattern.value("Center", GBufferBase::SamplePattern::Center);
     samplePattern.value("DirectX", GBufferBase::SamplePattern::DirectX);
     samplePattern.value("Halton", GBufferBase::SamplePattern::Halton);
-    samplePattern.value("Stratified", GBufferBase::SamplePattern::Stratified);
+    samplePattern.value("Stratified", GBufferBase::SamplePattern::Stratified);*/
 }
 
 namespace
