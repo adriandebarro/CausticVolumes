@@ -696,6 +696,9 @@
     <Filter Include="Utils\AccelerationStructures">
       <UniqueIdentifier>{2b1db46b-56a1-4144-b3a1-01ac57f46f5d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils\SDF">
+      <UniqueIdentifier>{7b57297d-5852-4319-baf4-8d45e86067e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\API\D3D12\D3D12DescriptorHeap.cpp">
@@ -1678,6 +1681,21 @@
     </ShaderSource>
     <ShaderSource Include="Utils\AccelerationStructures\CachingViaBVH.slang">
       <Filter>Utils\AccelerationStructures</Filter>
+    </ShaderSource>
+    <ShaderSource Include="Utils\SDF\SDF2DDraw.slang">
+      <Filter>Utils\SDF</Filter>
+    </ShaderSource>
+    <ShaderSource Include="Utils\SDF\SDF2DPrimitives.slang">
+      <Filter>Utils\SDF</Filter>
+    </ShaderSource>
+    <ShaderSource Include="Utils\SDF\SDF3DShapes.slang">
+      <Filter>Utils\SDF</Filter>
+    </ShaderSource>
+    <ShaderSource Include="Utils\SDF\SDFOperations.slang">
+      <Filter>Utils\SDF</Filter>
+    </ShaderSource>
+    <ShaderSource Include="Utils\SDF\SDFOperationType.slang">
+      <Filter>Utils\SDF</Filter>
     </ShaderSource>
   </ItemGroup>
 </Project>

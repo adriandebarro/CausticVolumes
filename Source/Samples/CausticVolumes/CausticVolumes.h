@@ -30,10 +30,19 @@
 
 using namespace Falcor;
 
+struct VoxelNormalsGUI
+{
+    bool showNormalField = false;
+    bool showBoxes = true;
+    bool showBoxDiagonals = true;
+    bool showBorderLines = false;
+    bool showBoxAroundPoint = false;
+};
 class CausticVolumes : public IRenderer
 {
 public:
     void createPipelines(RenderContext* pRenderContext);
+    void createRenderPass();
     void onLoad(RenderContext* pRenderContext) override;
     void onFrameRender(RenderContext* pRenderContext, const Fbo::SharedPtr& pTargetFbo) override;
     void onShutdown() override;
@@ -46,6 +55,13 @@ public:
 private:
     void loadScene(const std::string& filename, const Fbo* pTargetFbo);
 
+public:
+    enum class SceneOptions
+    {
+        MarkerDemo,
+        VoxelNormals
+    };
+
 private:
     RenderGraph::SharedPtr mpCausticsVolumeRG = nullptr;
     RenderGraph::SharedPtr mpSSAORG = nullptr;
@@ -56,4 +72,10 @@ private:
     RenderPass::SharedPtr mpSSAOPass = nullptr;
     Scene::SharedPtr mpScene;
     Camera::SharedPtr mpCamera;
+    SceneOptions mSelectedScene = SceneOptions::MarkerDemo;
+
+    bool                            mLeftButtonDown = false;
+    float2                          mMousePosition = float2(0.2f, 0.1f);
+    VoxelNormalsGUI mVoxelNormalsGUI;
+    FullScreenPass::SharedPtr mpVisualisationPass;
 };

@@ -350,6 +350,28 @@ float3 sample_triangle(float2 u)
 
 ******************************************************************************/
 
+float2x2 inverse(float2x2 M)
+{
+    float2x2 inv;
+    float invdet = 1.0f / determinant(M);
+    inv[0][0] = M[1][1] * invdet;
+    inv[1][1] = M[0][0] * invdet;
+    inv[0][1] = -M[1][0] * invdet;
+    inv[1][0] = -M[0][1] * invdet;
+    return inv;
+}
+
+/** Inverts a 2x3 matrix.
+*/
+float2x3 inverse(float2x3 M)
+{
+    float2x2 N = float2x2(M._m00, M._m01, M._m10, M._m11);
+    float2x2 Ni = inverse(N);
+    float2 t = -mul(Ni, float2(M._m02, M._m12));
+    float2x3 Mi = float2x3(Ni._m00, Ni._m01, t.x, Ni._m10, Ni._m11, t.y);
+    return Mi;
+}
+
 /** Inverts a 3x3 matrix.
 */
 float3x3 inverse(float3x3 M)

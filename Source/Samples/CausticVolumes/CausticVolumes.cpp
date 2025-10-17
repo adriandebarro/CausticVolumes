@@ -26,22 +26,66 @@
  # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
 #include "CausticVolumes.h"
+//#include <Core/Sample.cpp>
 uint32_t mSampleGuiWidth = 250;
 uint32_t mSampleGuiHeight = 200;
 uint32_t mSampleGuiPositionX = 20;
 uint32_t mSampleGuiPositionY = 40;
 
-static const float4 kClearColor(0.38f, 0.52f, 0.10f, 1);
-static const std::string kDefaultScene = "Arcade/Arcade.pyscene";
+namespace {
+    const char kMarkerShaderFile[] = "Samples/CausticVolumes/Visualization2d.ps.slang";
+    const char kNormalsShaderFile[] = "Samples/CausticVolumes/VoxelNormals.ps.slang";
 
+    static const float4 kClearColor(0.38f, 0.52f, 0.10f, 1);
+    static const std::string kDefaultScene = "Arcade/Arcade.pyscene";
+
+    const Gui::DropdownList kModeList = {
+        {(uint32_t)CausticVolumes::SceneOptions::MarkerDemo, "Marker demo"},
+        {(uint32_t)CausticVolumes::SceneOptions::VoxelNormals, "Voxel normals"},
+    };
+}
 void CausticVolumes::onGuiRender(Gui* pGui)
 {
-    Gui::Window w(pGui, "Falcor", { 250, 200 });
+    /*Gui::Window w(pGui, "Falcor", { 250, 200 });
     gpFramework->renderGlobalUI(pGui);
     w.text("Hello from CausticVolumes");
     if (w.button("Click Here"))
     {
         msgBox("Now why would you do that?");
+    }*/
+    Gui::Window w(pGui, "Visualization 2D", { 700, 900 }, { 10, 10 });
+    bool changed = w.dropdown("Scene selection", kModeList, reinterpret_cast<uint32_t&>(mSelectedScene));
+    if (changed)
+    {
+        createRenderPass();
+    }
+    bool paused = gpFramework->getGlobalClock().isPaused();
+    changed = w.checkbox("Pause time", paused);
+    if (changed)
+    {
+        if (paused)
+        {
+            gpFramework->getGlobalClock().pause();
+        }
+        else
+        {
+            gpFramework->getGlobalClock().play();
+        }
+    }
+
+    //renderGlobalUI(pGui);
+    if (mSelectedScene == SceneOptions::MarkerDemo)
+    {
+        w.text("Left-click and move mouse...");
+    }
+    else if (mSelectedScene == SceneOptions::VoxelNormals)
+    {
+        w.text("Left-click and move mouse in the left boxes to display the normal there.");
+        w.checkbox("Show normal field", mVoxelNormalsGUI.showNormalField, false);
+        w.checkbox("Show boxes", mVoxelNormalsGUI.showBoxes, false);
+        w.checkbox("Show box diagonals", mVoxelNormalsGUI.showBoxDiagonals, false);
+        w.checkbox("Show border lines", mVoxelNormalsGUI.showBorderLines, false);
+        w.checkbox("Show box around point", mVoxelNormalsGUI.showBoxAroundPoint, false);
     }
 }
 
@@ -70,6 +114,23 @@ void CausticVolumes::createPipelines(RenderContext* pRenderContext)
     mpSSAORG->markOutput("SSAO.colorOut");
     mpSSAORG->compile(pRenderContext);
 }
+
+void CausticVolumes::createRenderPass()
+{
+    switch (mSelectedScene)
+    {
+    case SceneOptions::MarkerDemo:
+        mpVisualisationPass = FullScreenPass::create(kMarkerShaderFile);
+        break;
+    case SceneOptions::VoxelNormals:
+        mpVisualisationPass = FullScreenPass::create(kNormalsShaderFile);
+        break;
+    default:
+        mpVisualisationPass = nullptr;
+        break;
+    }
+}
+
 
 void CausticVolumes::loadScene(const std::string& filename, const Fbo* pTargetFbo)
 {
@@ -135,6 +196,30 @@ void CausticVolumes::onFrameRender(RenderContext* pRenderContext, const Fbo::Sha
     {
         mpSSAORG->execute(pRenderContext);
         pRenderContext->blit(mpSSAORG->getOutput("SSAO.colorOut")->getSRV(), pTargetFbo->getRenderTargetView(0));
+        if (mpVisualisationPass)
+        {
+            float width = (float)pTargetFbo->getWidth();
+            float height = (float)pTargetFbo->getHeight();
+            mpVisualisationPass["Visual2DCB"]["iResolution"] = float2(width, height);
+            mpVisualisationPass["Visual2DCB"]["iGlobalTime"] = (float)gpFramework->getGlobalClock().getTime();
+            mpVisualisationPass["Visual2DCB"]["iMousePosition"] = mMousePosition;
+
+            switch (mSelectedScene)
+            {
+            case SceneOptions::MarkerDemo:
+                break;
+            case SceneOptions::VoxelNormals:
+                mpVisualisationPass["VoxelNormalsCB"]["iShowNormalField"] = mVoxelNormalsGUI.showNormalField;
+                mpVisualisationPass["VoxelNormalsCB"]["iShowBoxes"] = mVoxelNormalsGUI.showBoxes;
+                mpVisualisationPass["VoxelNormalsCB"]["iShowBoxDiagonals"] = mVoxelNormalsGUI.showBoxDiagonals;
+                mpVisualisationPass["VoxelNormalsCB"]["iShowBorderLines"] = mVoxelNormalsGUI.showBorderLines;
+                mpVisualisationPass["VoxelNormalsCB"]["iShowBoxAroundPoint"] = mVoxelNormalsGUI.showBoxAroundPoint;
+                break;
+            default:
+                break;
+            }
+            mpVisualisationPass->execute(pRenderContext, pTargetFbo);
+        }
     }
 }
 
@@ -157,8 +242,32 @@ bool CausticVolumes::onKeyEvent(const KeyboardEvent& keyEvent)
 
 bool CausticVolumes::onMouseEvent(const MouseEvent& mouseEvent)
 {
-    if (mpScene && mpScene->onMouseEvent(mouseEvent)) return true;
-    return false;
+    bool bHandled = false;
+    switch (mouseEvent.type)
+    {
+    case MouseEvent::Type::LeftButtonDown:
+        mLeftButtonDown = true;
+        bHandled = true;
+        break;
+    case MouseEvent::Type::LeftButtonUp:
+        mLeftButtonDown = false;
+        bHandled = true;
+        break;
+    case MouseEvent::Type::Move:
+        if (mLeftButtonDown)
+        {
+            mMousePosition = mouseEvent.screenPos;
+            bHandled = true;
+        }
+        break;
+    default:
+        break;
+    }
+    return bHandled;
+
+
+    //if (mpScene && mpScene->onMouseEvent(mouseEvent)) return true;
+    //return false;
 }
 
 void CausticVolumes::onHotReload(HotReloadFlags reloaded)

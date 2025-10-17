@@ -6,4 +6,8 @@
   <ItemGroup>
     <ClInclude Include="CausticVolumes.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ShaderSource Include="Visualisation2d.ps.hlsl" />
+    <ShaderSource Include="VoxelNormals.ps.slang" />
+  </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 /***************************************************************************
- # Copyright (c) 2020, NVIDIA CORPORATION. All rights reserved.
+ # Copyright (c) 2015-22, NVIDIA CORPORATION. All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without
  # modification, are permitted provided that the following conditions
@@ -25,53 +25,22 @@
  # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **************************************************************************/
-#include "CausticVolumesPass.h"
+#pragma once
 
+#include "Utils/HostDeviceShared.slangh"
 
-namespace
+BEGIN_NAMESPACE_FALCOR
+
+enum class SDFOperationType
 {
-    const char kDesc[] = "Insert pass description here";    
-}
+    Union,
+    Subtraction,
+    Intersection,
+    SmoothUnion,
+    SmoothSubtraction,
+    SmoothIntersection,
 
-// Don't remove this. it's required for hot-reload to function properly
-extern "C" __declspec(dllexport) const char* getProjDir()
-{
-    return PROJECT_DIR;
-}
+    Count
+};
 
-extern "C" __declspec(dllexport) void getPasses(Falcor::RenderPassLibrary& lib)
-{
-    lib.registerClass("CausticVolumesPass", kDesc, CausticVolumesPass::create);
-}
-
-CausticVolumesPass::SharedPtr CausticVolumesPass::create(RenderContext* pRenderContext, const Dictionary& dict)
-{
-    SharedPtr pPass = SharedPtr(new CausticVolumesPass(dict));
-    return pPass;
-}
-
-std::string CausticVolumesPass::getDesc() { return kDesc; }
-
-Dictionary CausticVolumesPass::getScriptingDictionary()
-{
-    return Dictionary();
-}
-
-RenderPassReflection CausticVolumesPass::reflect(const CompileData& compileData)
-{
-    // Define the required resources here
-    RenderPassReflection reflector;
-    reflector.addOutput("causticOut", "");
-    reflector.addInput("depthIn", "");
-    return reflector;
-}
-
-void CausticVolumesPass::execute(RenderContext* pRenderContext, const RenderData& renderData)
-{
-    // renderData holds the requested resources
-    // auto& pTexture = renderData["src"]->asTexture();
-}
-
-void CausticVolumesPass::renderUI(Gui::Widgets& widget)
-{
-}
+END_NAMESPACE_FALCOR

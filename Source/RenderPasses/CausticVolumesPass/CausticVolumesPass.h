@@ -28,6 +28,13 @@
 #pragma once
 #include "Falcor.h"
 #include "FalcorExperimental.h"
+#include <filesystem>
+#include <rapidjson/rapidjson.h>
+#include <rapidjson/document.h>
+#include <rapidjson/prettywriter.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/error/en.h>
+#include "Core/"
 
 using namespace Falcor;
 
@@ -54,5 +61,71 @@ public:
     virtual bool onKeyEvent(const KeyboardEvent& keyEvent) override { return false; }
 
 private:
-    CausticVolumesPass() = default;
+    /// <summary>
+    /// default copnstructor forn the CV pass
+    /// </summary>
+    /// <param name="dict"></param>
+    CausticVolumesPass(const Dictionary& dict)
+    {
+        parseDetails(dict);
+    }
+
+    /// <summary>
+    /// This function parses hte diuctionary which passes the information to the pass
+    /// </summary>
+    /// <param name="dict"></param>
+    void parseDetails(const Dictionary& dict)
+    {
+        mJsonPath = dict["jsonPath"];
+
+        if (mJsonPath.size() > 0)
+        {
+            parseJson();
+        }
+    }
+
+    std::string readFile(const std::filesystem::path& path)
+    {
+        std::ifstream ifs(path, std::ios::binary);
+        if (!ifs)
+            throw std::exception(("Failed to read from file " + path.string()).c_str());
+        return std::string((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
+    }
+
+    bool parseJson()
+    {
+        // load the json file
+        std::filesystem::path jsonFilePath = mJsonPath;
+
+        if (std::filesystem::exists(jsonFilePath))
+        {
+            std::string jsonData = readFile(jsonFilePath);
+            rapidjson::StringStream jsonStream(jsonData.c_str());
+
+            rapidjson::Document jsonDocument;
+            jsonDocument.ParseStream(jsonStream);
+
+        }
+    }
+
+private:
+    std::string mJsonPath = "";
+
+    struct SlabDetails
+    {
+        uint slabCount;
+    };
+
+    struct CausticVolumes
+    {
+        uint index;
+        float3 maxPoint;
+        float3 minPoint;
+        float3 center;
+        bool autoBoundingBox;
+        Camera::SharedPtr pSlabsCamera;
+        Camera::SharedPtr pProjectorCamera;
+    };
+
+    std::vector<CausticVolumes> mBoundingBoxDetails;
 };

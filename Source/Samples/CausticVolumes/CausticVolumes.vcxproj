@@ -21,6 +21,10 @@
       <Project>{2c535635-e4c5-4098-a928-574f0e7cd5f9}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ShaderSource Include="Visualisation2d.ps.hlsl" />
+    <ShaderSource Include="VoxelNormals.ps.slang" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3C7551D5-1D50-4C86-9F93-A4498128930F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

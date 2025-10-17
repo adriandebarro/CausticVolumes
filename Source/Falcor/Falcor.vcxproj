@@ -121,6 +121,11 @@
     <ClInclude Include="Core\State\StateGraph.h" />
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Experimental\Scene\Lights\EmissiveLightSampler.h" />
+    <ShaderSource Include="Utils\SDF\SDF2DDraw.slang" />
+    <ShaderSource Include="Utils\SDF\SDF2DPrimitives.slang" />
+    <ShaderSource Include="Utils\SDF\SDF3DShapes.slang" />
+    <ShaderSource Include="Utils\SDF\SDFOperations.slang" />
+    <ShaderSource Include="Utils\SDF\SDFOperationType.slang" />
     <ShaderSource Include="Experimental\Scene\Lights\BuildTriangleList.cs.slang" />
     <ShaderSource Include="Core\API\Blit.slang" />
     <ClInclude Include="Experimental\Scene\Lights\EmissivePowerSampler.h" />
